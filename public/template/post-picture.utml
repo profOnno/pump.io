@@ -8,7 +8,7 @@
     <form id="post-picture" action="/main/upload" enctype="multipart/form-data">
       <fieldset>
         <label for="title">Title</label>
-        <input type="text" id="picture-title" placeholder="(optional)" name="title"></input>
+        <input type="text" id="picture-title" class="span5" placeholder="Appreciated" name="title"></input>
         <label for="description">Description</label>
         <textarea id="picture-description" class="span5" name="description" placeholder="Description (optional)" rows="3">
         </textarea>
