@@ -55,7 +55,11 @@ var registerAndConfirm = function(smtp, cl, email, nickname, password, callback)
             registerEmail(cl, nickname, password, email, this.parallel());
         },
         function(err, message, results) {
-            if (err) throw err;
+	    console.log('gonna call confirmEmail');
+            if (err){
+		console.log('menno error');
+		 throw err;
+		}
             user = results;
             confirmEmail(message, this);
         },

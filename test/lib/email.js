@@ -35,22 +35,26 @@ var oneEmail = function(smtp, addr, callback) {
     var data,
         timeoutID,
         isOurs = function(envelope) {
+		console.log(JSON.stringify(envelope));
             return _.contains(envelope.to, addr);
         },
         starter = function(envelope) {
             if (isOurs(envelope)) {
+		console.log('its our envelope');
                 data = "";
                 smtp.on("data", accumulator);
                 smtp.once("dataReady", ender);    
             }
         },
         accumulator = function(envelope, chunk) {
+		console.log('accumulator');
             if (isOurs(envelope)) {
                 data = data + chunk.toString();
             }
         },
         ender = function(envelope, cb) {
             var msg;
+		console.log('ender');
             if (isOurs(envelope)) {
                 clearTimeout(timeoutID);
                 smtp.removeListener("data", accumulator);
@@ -71,15 +75,17 @@ var oneEmail = function(smtp, addr, callback) {
 };
 
 var confirmEmail = function(message, callback) {
+	console.log('confirmEmail head');
     var urlre = /http:\/\/localhost:4815\/main\/confirm\/[a-zA-Z0-9_\-]+/,
         match = urlre.exec(message.data),
         url = (match.length > 0) ? match[0] : null;
-
+	
+	console.log('in confirmEmail');
     if (!url) {
         callback(new Error("No URL matched"), null);
         return;
     }
-
+	console.log('url is:'+url);
     http.get(url, function(res) {
         var body = "";
         res.on("data", function(chunk) {
