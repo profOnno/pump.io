@@ -6,6 +6,11 @@
   <div class="modal-body">
     <form id="post-note" class="form-horizontal">
       <fieldset>
+	<div>
+	<label for="note-title">Title</label>
+	<input id="note-title" class="span5" name="title" size="30" type="text"/>
+	</div>
+	<br>
         <textarea id="note-content" class="span5" name="note" rows="6"></textarea>
         <div>
           <%= partial("recipient-selector", {name: "to", id: "note-to", label: "To"}) %>

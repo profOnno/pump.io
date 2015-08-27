@@ -2731,6 +2731,7 @@
         },
         postNote: function(ev) {
             var view = this,
+                title = view.$('#post-note #note-title').val(),
                 text = view.$('#post-note #note-content').val(),
                 to = view.$('#post-note #note-to').val(),
                 cc = view.$('#post-note #note-cc').val(),
@@ -2738,6 +2739,7 @@
                     verb: "post",
                     object: {
                         objectType: "note",
+			displayName: title,
                         content: text
                     }
                 }),
