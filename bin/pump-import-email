@@ -49,8 +49,10 @@ var QUEUE_MAX = 1;
 // Connect to databank and start importing activities
 
 var main = function() {
-    var config = getConfig(argv.c),
-        q = new Queue(QUEUE_MAX),
+	console.log("in main: "+argv.c);
+    var config = getConfig(argv.c);
+console.log("got config");
+	var q = new Queue(QUEUE_MAX),
         log = setupLogger(config);
 
     log.info("Initializing pump.io");
@@ -76,7 +78,7 @@ var main = function() {
                 var parts;
                 line.trim();
                 if (line.length !== 0) {
-                    parts = line.split("\t");
+                    parts = line.split(",");
                     q.enqueue(setEmail, [parts[0], parts[1], log], group());
                 }
             });
@@ -112,7 +114,6 @@ var getConfig = function(filename) {
     // This is all sync
     for (i = 0; i < files.length; i++) {
         if (fs.existsSync(files[i])) {
-            raw = fs.readFileSync(files[i]);
             try {
                 parsed = JSON.parse(raw);
                 _.extend(config, parsed);

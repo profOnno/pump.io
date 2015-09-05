@@ -1,6 +1,6 @@
 <div class="span12" class="account">
 
-  <form id="account">
+   <form id="account">
 
     <fieldset>
 
@@ -30,6 +30,28 @@
 	</div>
       </div>
 
+    </fieldset>
+
+    <fieldset>
+      <div class="actions">
+	<input type="submit" class="btn btn-primary" value="Save changes">
+      </div>
+    </fieldset>  
+
+  </form>
+
+ <form id="emailform">
+
+    <fieldset>
+
+      <legend>Email</legend>
+      
+      <div class="clearfix">
+	<label>Email</label>
+	<div class="input">
+          <input class="span6" id="email" name="email" value="<%- principalUser.email %>" size="30" />
+	</div>
+      </div>
     </fieldset>
 
     <fieldset>

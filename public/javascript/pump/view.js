@@ -2440,7 +2440,8 @@
         templateName: 'account',
         modelName: "user",
         events: {
-            "submit #account": "saveAccount"
+            "submit #account": "saveAccount",
+	    "submit #emailform": "saveEmail",
         },
         saveAccount: function() {
             var view = this,
@@ -2481,7 +2482,34 @@
             }
             
             return false;
-        }
+        },
+	saveEmail: function(){
+		var view = this,
+		    user = Pump.principalUser,
+		    email = view.$("#email").val();
+		//FIX add email validation
+		if (!email || email===0){
+		    view.showError("Only valid a email address is allowed."+email);
+		}else{ 
+		
+		view.startSpin();
+
+                user.save("email",
+                          email,
+                          {
+                              success: function(resp, status, xhr) {
+                                  view.showSuccess("Saved.");
+                                  view.stopSpin();
+                              },
+                              error: function(model, error, options) {
+                                  view.showError(error.message);
+                                  view.stopSpin();
+                              }
+                          }
+                         );
+		}
+		return false; //FIX figure out what and if we need to return something
+	}
     });
 
     Pump.ObjectContent = Pump.ContentView.extend({
