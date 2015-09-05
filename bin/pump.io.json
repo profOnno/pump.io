@@ -1,0 +1,16 @@
+{
+    "driver":  "redis",
+    "params":  {},
+    "secret":  "tuurlijkjonge",
+    "noweb":  false,
+    "site":  "Are U Dev?",
+    "owner":  "profOnno",
+    "hostname":  "localhost",
+    "port":  31337,
+    "nologger":  false,
+    "serverUser":  "teknomen",
+    "requireEmail": true,
+    "uploaddir": "/var/local/pump.io/uploads",
+    "debugClient": false,
+    "noCDN": true,
+}
