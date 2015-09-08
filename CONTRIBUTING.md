@@ -1,10 +1,7 @@
-If you are making pull requests or contributing code, please take a
-few seconds to electronically
-[sign the Contributor License Agreement](http://www.clahub.com/agreements/e14n/pump.io).
+If you contribute code, please ensure that you have the rights to do
+so. In particular, your employer may own the copyright of code you
+produce, so you should talk with them and ask if this is the case.
 
-This brief agreement just makes sure you know that the code is under
-Apache 2.0, that you can only contribute stuff that you have rights
-to, and that you need to talk to your employer if you have an IP
-agreement with them.
-
-It can also be helpful if you're adding issues, but isn't quite as big a deal.
+Also, contributing code constitutes releasing it under the Apache 2.0
+license. If this is not agreeable to you, you must not contribute back
+any of the code you have written.
