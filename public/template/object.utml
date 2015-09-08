@@ -21,6 +21,9 @@
       <% if (object.image && object.image.url) { %>
       <p><img src="<%- object.image.url %>" class="img-polaroid" /></p>
       <% } %>
+      <% if (object.stream && object.stream.url) { %>
+          <p><video src="<%- (object.stream.pump_io && object.stream.pump_io.proxyURL) ? object.stream.pump_io.proxyURL : object.stream.url %>" width="100%" height="auto" preload="auto" controls></video></p>
+      <% } %>
 
       <div class="object-content">
         <%= object.content %>

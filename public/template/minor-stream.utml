@@ -1,5 +1,36 @@
-<ul class="media-list" id="minor-stream">
-  <% _.each(minor.items, function(activity) { %>
+<ul class="media-list scrollable-y" id="minor-stream" height="500px">
+  <% _.each(_.uniq(minor.items), function(activity) { %>
   <%= partial("minor-activity", {activity: activity, headless: headless}) %>
   <% }); %>
 </ul>
+
+<script>
+	var stream = document.getElementById("minor-stream");
+
+	function findOffsetTop(obj) {
+	  var offsetTop = 0;
+	  if (obj.offsetParent) {
+	    do { 
+	         offsetTop += obj.offsetTop;
+	       } while (obj = obj.offsetParent);
+          }
+          return offsetTop;
+        }
+	
+	// Handle a few special cases:
+	// 1) The offset of the view is > than the innerHeight, which can
+ 	//    happen on mobile browsers in some views, like the user view.
+	// 2) the target height is just ridiculously small because
+	//    innerHeight - (offSet+10) ~ 0.
+
+	var height = window.innerHeight - findOffsetTop(stream) - 10;
+	if (findOffsetTop(stream) > window.innerHeight ||
+	    height < 400) {
+	    height = 400;
+	}
+
+	stream.style['height'] = '' + 
+			         height + 
+                                 'px';
+</script>
+

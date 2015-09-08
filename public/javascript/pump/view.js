@@ -332,6 +332,8 @@
                     runTemplate(template, main, setOutput);
                 });
             }
+
+
             return this;
         },
         stopSpin: function() {
@@ -554,7 +556,8 @@
         events: {
             "click #logout": "logout",
             "click #post-note-button": "postNoteModal",
-            "click #post-picture-button": "postPictureModal"
+            "click #post-picture-button": "postPictureModal",
+	    "click #refresh-view": "refreshView"
         },
         postNoteModal: function() {
             var view = this;
@@ -563,6 +566,7 @@
         postPictureModal: function() {
             var view = this;
             view.showPostingModal('#post-picture-button', Pump.PostPictureModal);
+
         },
         showPostingModal: function(btn, Cls) {
             var view = this,
@@ -589,7 +593,7 @@
                                          }});
                 }
             });
-
+	    
             return false;
         },
         logout: function() {
@@ -633,6 +637,12 @@
             };
 
             Pump.ajax(options);
+        },
+        refreshView: function() {
+            var view = this;
+	    Pump.refreshStreams();
+	    // Refresh the content of the messages and notifications buttons
+	    Pump.getStreams();
         },
         getStreams: function() {
             var view = this,
@@ -697,12 +707,18 @@
 
     Pump.MessagesView = Pump.TemplateView.extend({
         templateName: "messages",
-        modelName: "messages"
+        modelName: "messages",
+	initialize: function() {
+	    this.model.fetch();
+	}
     });
 
     Pump.NotificationsView = Pump.TemplateView.extend({
         templateName: "notifications",
-        modelName: "notifications"
+        modelName: "notifications",
+	initialize: function() {
+	    this.model.fetch();
+	}
     });
 
     Pump.ContentView = Pump.TemplateView.extend({
@@ -772,6 +788,7 @@
                                                               notifications: Pump.principalUser.minorDirectInbox
                                                           }});
                         Pump.body.nav.render();
+			
                     });
                     if (Pump.config.sockjs) {
                         // Request a new challenge
@@ -1208,6 +1225,7 @@
     Pump.MajorStreamView = Pump.TemplateView.extend({
         templateName: 'major-stream',
         modelName: 'activities',
+	didScroll: false,
         parts: ["major-activity",
                 "responses",
                 "reply",
@@ -1223,7 +1241,45 @@
                     data: ["headless"]
                 }
             }
-        }
+        },
+	events: {
+	    "scroll": "handleScroll",
+	},
+	initialize: function() {
+	    var view = this;
+	    Pump.TemplateView.prototype.initialize.call(view);
+	    _.bindAll(view, 'handleScroll');
+
+	    $(window).on('resize.resizeview', view.resize.bind(view));
+	},
+        handleScroll: function() {
+            this.didScroll = true;
+	    var streams;
+            if (this.$el.scrollTop() >= this.$el.prop("scrollHeight") - this.$el.height() - 10) {
+		streams = Pump.getStreams();
+		if (streams.major && streams.major.nextLink()) {
+                    Pump.body.startLoad();
+                    streams.major.getNext(function(err) {
+			Pump.body.endLoad();
+                    });
+		}
+            }
+        },
+	render: function() {
+	    var view = this;
+	    Pump.TemplateView.prototype.render.call(view);
+	    //return this.trigger('render', this);
+	},
+	resize: function() {
+	    if (this.$el) {
+		if (this.$el.offset()) {
+		    this.$el.height( $(window).innerHeight() - this.$el.offset().top - 10 );
+		} else {
+		    this.$el.height( $(window).innerHeight() *0.75 );
+		}
+	    }
+
+	},
     });
 
     Pump.MinorStreamView = Pump.TemplateView.extend({
@@ -1239,7 +1295,29 @@
                     data: ["headless"]
                 }
             }
-        }
+        },
+	events: {
+	    "resize": "render"
+	},
+	initialize: function() {
+	    var view = this;
+	    Pump.TemplateView.prototype.initialize.call(view);
+
+	    $(window).on('resize.resizeview', view.resize.bind(view));
+	},
+	render: function() {
+	    Pump.TemplateView.prototype.render.call(this);
+	    return this;
+	},
+	resize: function() {
+	    if (this.$el) {
+		if (this.$el.offset()) {
+		    this.$el.height( $(window).innerHeight() - this.$el.offset().top - 10 );
+		} else {
+		    this.$el.height( $(window).innerHeight() *0.75 );
+		}
+	    }
+	},
     });
 
     Pump.InboxContent = Pump.ContentView.extend({
@@ -2716,6 +2794,7 @@
         className: "modal-holder",
         templateName: 'post-note',
         parts: ["recipient-selector"],
+	waitOnClose: false,
         ready: function() {
             var view = this;
 
@@ -2727,7 +2806,9 @@
             view.$("#note-cc").select2(Pump.selectOpts());
         },
         events: {
-            "click #send-note": "postNote"
+            "click #send-note": "postNote",
+	    "click #close-post-note":  "sureToClose",
+	    "keydown": "handleKey",
         },
         postNote: function(ev) {
             var view = this,
@@ -2782,7 +2863,29 @@
                     view.remove();
                 }
             });
-        }
+        },
+	handleKey: function(ev) {
+	    if (ev.keyCode == 27 && !(this.waitOnClose)) {
+		this.waitOnClose = true;
+		this.sureToClose(ev);
+	    }
+	},
+	sureToClose: function(ev) {
+	    var view = this;
+
+	    var prompt = "Are you sure you want to stop posting this note?";
+	    
+	    Pump.areYouSure(prompt, function(err, sure) {
+                if (sure) {
+		    view.$el.modal('hide');
+		    Pump.resetWysihtml5(view.$('#note-content'));
+		    view.waitOnClose = false;
+		    view.remove();
+		} else {
+		    view.waitOnClose = false;
+		}
+	    });
+	}
     });
 
     Pump.PostPictureModal = Pump.TemplateView.extend({
@@ -2790,9 +2893,13 @@
         className: "modal-holder",
         templateName: 'post-picture',
         parts: ["recipient-selector"],
+	waitOnClose: false,
         events: {
-            "click #send-picture": "postPicture"
+            "click #send-picture":        "postPicture",
+	    "click #close-post-picture":  "sureToClose",
+	    "keydown": "handleKey",
         },
+	
         ready: function() {
             var view = this;
 
@@ -2809,7 +2916,7 @@
                         endpoint: "/main/upload"
                     },
                     text: {
-                        uploadButton: '<i class="icon-upload icon-white"></i> Picture file'
+                        uploadButton: '<i class="icon-upload icon-white"></i> Media file'
                     },
                     template: '<div class="qq-uploader">' +
                         '<pre class="qq-upload-drop-area"><span>{dragZoneText}</span></pre>' +
@@ -2824,9 +2931,11 @@
                     autoUpload: false,
                     multiple: false,
                     validation: {
-                        allowedExtensions: ["jpeg", "jpg", "png", "gif", "svg", "svgz"],
-                        acceptFiles: "image/*"
+                        allowedExtensions: ["jpeg", "jpg", "png", "gif", "svg", "svgz", "mp4", "ogv", "webm", "mov"],
+                        acceptFiles: "video/*,image/*",
+			sizeLimit: 50000000.0
                     }
+
                 }).on("complete", function(event, id, fileName, responseJSON) {
 
                     var stream = Pump.principalUser.majorStream,
@@ -2882,6 +2991,31 @@
                 });
             }
         },
+	handleKey: function(ev) {
+	    if (ev.keyCode == 27 && !(this.waitOnClose)) {
+		this.waitOnClose = true;
+		this.sureToClose(ev);
+	    }
+	},
+	sureToClose: function(ev) {
+	    var view = this;
+
+	    var prompt = "Are you sure you want to stop posting this media?";
+	    
+            Pump.areYouSure(prompt, function(err, sure) {
+                if (sure) {
+                    view.$el.modal('hide');
+                    view.stopSpin();
+                    view.$("#picture-fineupload").fineUploader('reset');
+                    Pump.resetWysihtml5(view.$('#picture-description'));
+                    view.$('#picture-title').val("");
+		    view.waitOnClose = false;
+		    view.remove();
+		}  else {
+		    view.waitOnClose = false;
+		}
+            });
+	},
         postPicture: function(ev) {
             var view = this,
                 description = view.$('#post-picture #picture-description').val(),
@@ -3207,18 +3341,27 @@
         modalView = new Cls(options);
 
         // When it's ready, show immediately
-
         modalView.on("ready", function() {
             $("body").append(modalView.el);
             modalView.$el.modal('show');
+	    for (ichild = 0; ichild < modalView.el.children.length; ichild++) {
+		var child = modalView.el.children[ichild];
+		if (child.className == "modal-body") { 
+		    var model_body_height = $(window).innerHeight() * 0.5;
+		    var height_string = 'height: ' + model_body_height.toString() + 'px;';
+		    child.setAttribute('style',height_string);
+		}
+	    }
             if (options.ready) {
                 options.ready();
             }
         });
 
+
         // render it (will fire "ready")
 
         modalView.render();
+
     };
 
     Pump.resetWysihtml5 = function(el) {

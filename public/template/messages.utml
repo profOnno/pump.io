@@ -5,18 +5,41 @@
                  <% } %>"
                  data-toggle="dropdown" href="#">
     <i class="icon-envelope icon-white"></i>
-    <% if (messages.items.length > 0) { %>
-    <span class="badge badge-important"><%- messages.items.length %></span>
+
+   <% var recent_messages = []; 
+      var older_messages  = []; 
+      var count = 0; 
+      _.each(messages.items, function(activity) {
+        if (_.isObject(activity)) { 
+         var date = new Date(activity.updated); 
+         var now  = new Date(); 
+         if (Math.abs(date.getTime()-now.getTime()) < 24*60*60*1.0e3) {
+          recent_messages.push(activity); 
+         } else {
+          older_messages.push(activity);
+         } 
+        }
+      }); %>
+
+
+
+    <% if (recent_messages.length > 0) { %>
+    <span class="badge badge-important"><%- recent_messages.length %></span>
     <% } %>
   </button>
+
+
   <ul class="dropdown-menu" role="menu">
-    <% _.each(messages.items, function(activity) { %>
-    <% if (_.isObject(activity)) { %>
+  <% if (recent_messages.length == 0) { %>
+    <li><small><em>No Recent Messages</em></small></li>
+  <% } else { %>
+    <li><small><strong>Recent Messages:</strong></small></li>
+    <% _.each(recent_messages, function(activity) { %>
     <li>
-      <small><%= activity.content %></small>
+      <small><%= activity.content %>  </small>
     </li>
-    <% } %>
     <% }); %>
+  <% } %>
     <% if (messages.items.length > 0) { %>
     <li class="divider"></li>
     <% } %>

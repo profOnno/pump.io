@@ -1,18 +1,45 @@
 <div class="btn-group" id="notifications">
+  <% var recent_notifications = []; 
+     var older_notifications  = []; 
+     var count = 0; 
+     _.each(notifications.items, function(activity) { 	
+       var date = new Date(activity.updated); 
+       var now  = new Date(); 
+       if (Math.abs(date.getTime() - now.getTime()) < 24*3600*1e3) {
+        recent_notifications.push(activity); 
+       } else {
+        older_notifications.push(activity);
+       }
+     }); %>
+
+
   <button class="btn dropdown-toggle btn-small btn-success
                  <% if (notifications.totalItems <= 0) { %>
                  disabled
                  <% } %>"
                  data-toggle="dropdown" href="#">
     <i class="icon-exclamation-sign icon-white"></i>
-    <% if (notifications.items.length > 0) { %>
-    <span class="badge badge-important"><%- notifications.items.length %></span>
+
+
+    <% if (recent_notifications.length > 0) { %>
+    <span class="badge badge-important"><%- recent_notifications.length %></span>
     <% } %>
   </button>
   <ul class="dropdown-menu">
-    <% _.each(notifications.items, function(activity) { %>
+  <% if (recent_notifications.length == 0) { %>
+    <li><small><em>No Recent Notifications</em></small></li>
+  <% } else { %>
+    <li><small><strong>Recent Notifications:</strong></small></li>
+    <% _.each(recent_notifications, function(activity) { %>
     <li>
-      <small><%= activity.content %></small>
+      <small><%= activity.content %>  </small>
+    </li>
+    <% }); %>
+  <% } %>
+    <li><small><strong>Older Notifications:</strong></small></li>
+    <% _.each(older_notifications, function(activity) { %>
+    <li>
+      <small><%= activity.content %>  </small>
     </li>
     <% }); %>
   </ul>

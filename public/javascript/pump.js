@@ -63,8 +63,6 @@ if (!window.Pump) {
             Pump.setupSocket();
         }
 
-        Pump.setupInfiniteScroll();
-
         if (Pump.principalUser) {
             Pump.principalUser = Pump.User.unique(Pump.principalUser);
             Pump.principal = Pump.Person.unique(Pump.principal);
@@ -459,36 +457,6 @@ if (!window.Pump) {
                 }
             });
         }
-    };
-
-    Pump.setupInfiniteScroll = function() {
-
-        var didScroll = false;
-
-        // scroll fires too fast, so just use the handler
-        // to set a flag, and check that flag with an interval
-
-        // From http://ejohn.org/blog/learning-from-twitter/
-
-        $(window).scroll(function() {
-            didScroll = true;
-        });
-
-        setInterval(function() {
-            var streams;
-            if (didScroll) {
-                didScroll = false;
-                if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
-                    streams = Pump.getStreams();
-                    if (streams.major && streams.major.nextLink()) {
-                        Pump.body.startLoad();
-                        streams.major.getNext(function(err) {
-                            Pump.body.endLoad();
-                        });
-                    }
-                }
-            }
-        }, 250);
     };
 
     // XXX: this is cheeseball.

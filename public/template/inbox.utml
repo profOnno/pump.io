@@ -1,9 +1,9 @@
 <div id="inbox">
   <div class="row">
-    <div class="span9">
+    <div class="span9" id="major-stream-view" >
       <%= partial("major-stream", {headless: false}) %>
     </div>
-    <div class="span3" id="sidebar">
+    <div class="span3" id="sidebar" >
       <h3>Meanwhile...</h3>
       <%= partial("minor-stream", {headless: false}) %>
     </div>
