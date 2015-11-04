@@ -1,0 +1,12 @@
+--- ../node_modules/simplesmtp/node_modules/rai/lib/rai.js	2015-11-04 21:24:07.386905758 +0000
++++ ../../../pump.io/node_modules/simplesmtp/node_modules/rai/lib/rai.js	2015-11-04 20:22:28.437407851 +0000
+@@ -425,8 +425,8 @@
+         return;
+     }
+     this._destroyed = true;
+-
+     this.removeAllListeners();
++    this.on("error",function(err){});
+ };
+ 
+ /**
