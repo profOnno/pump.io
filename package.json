@@ -50,6 +50,7 @@
         "pump-stop-following": "./bin/pump-stop-following"
     },
     "scripts": {
+        "postinstall": "./patches/apply.sh",
         "test": "vows test/*-test.js",
         "start": "./bin/pump"
     },
