@@ -9,7 +9,7 @@
         "node-mocks-http": "0.0.x",
         "zombie": "1.4.x",
         "xml2js": "0.1.x",
-        "simplesmtp": "0.3.x",
+        "simplesmtp": "https://github.com/profOnno/simplesmtp/archive/vows.tar.gz",
         "rimraf": "2.0.x"
     },
     "dependencies": { "connect": "1.x",
@@ -50,7 +50,6 @@
         "pump-stop-following": "./bin/pump-stop-following"
     },
     "scripts": {
-        "postinstall": "./patches/apply.sh",
         "test": "vows test/*-test.js",
         "start": "./bin/pump"
     },
