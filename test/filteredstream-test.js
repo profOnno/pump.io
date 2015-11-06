@@ -139,7 +139,7 @@ suite.addBatch({
                                                 displayName: tags[i % tags.length]
                                             }]
                                         },
-                                        location: places[i % places.length],
+                                        place: places[i % places.length],
                                         mood: {
                                             displayName: moods[i % moods.length]
                                         }
