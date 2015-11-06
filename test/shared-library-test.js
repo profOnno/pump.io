@@ -29,7 +29,8 @@ var testGet = function(rel) {
     return {
         topic: function() {
             var callback = this.callback;
-            http.get("http://localhost:4815" + rel, function(res) {
+            //agent: false disable pooling... else vows hangs.. bug in node!?
+            http.get({hostname:"localhost", port:4815, path: rel, agent: false}, function(res){
                 if (res.statusCode !== 200) {
                     callback(new Error("Bad status code: " + res.statusCode), null);
                 } else {
