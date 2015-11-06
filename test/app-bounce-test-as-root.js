@@ -1,4 +1,4 @@
-// app-https-test-as-root.js
+// app-bounce-test-as-root.js
 //
 // Test running the app over HTTPS
 //
