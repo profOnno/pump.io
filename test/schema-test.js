@@ -83,6 +83,7 @@ var types = [
 vows.describe("schema module interface").addBatch({
     "When we require the schema module": {
         topic: function() { 
+		console.trace("schema");
             return require("../lib/schema");
         },
         "we get a module": function(schemamodule) {

@@ -30,8 +30,22 @@ for (i = 2; i < process.argv.length; i++) {
 
 config.port = parseInt(config.port, 10);
 
+/*
+console.log("menno test/lib/app->makeApp");
+var exec = require('child_process').exec;
+exec("ps aux |grep [n]ode | grep test/lib/app.js",function(error,stdout,stderr){
+	console.log(stdout);
+});
+*/
+
 if (cluster.isMaster) {
     worker = cluster.fork();
+	worker.on("close",function(){
+		console.log("menno cluster onclose");
+	});
+	worker.on("error",function(){
+		console.log("menno cluster  onerror");
+	});
     worker.on("message", function(msg) {
         switch (msg.cmd) {
         case "error":
@@ -61,6 +75,12 @@ if (cluster.isMaster) {
         function(err, res) {
             if (err) throw err;
             app = res;
+		app.on("close",function(){
+			console.log("menno app.on close");
+		});
+		app.on("error",function(){
+			console.log("menno app.on error");
+		});
             app.run(this);
         },
         function(err) {

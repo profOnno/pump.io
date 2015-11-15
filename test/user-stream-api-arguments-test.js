@@ -400,6 +400,7 @@ suite.addBatch({
         },
         teardown: function(app) {
             if (app && app.close) {
+		console.log("in teardown app.close");
                 app.close();
             }
         },

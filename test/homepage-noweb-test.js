@@ -23,7 +23,7 @@ var assert = require("assert"),
     setupAppConfig = oauthutil.setupAppConfig;
 
 var suite = vows.describe("homepage with noweb test");
-
+var browser;//menno
 // A batch to test that the API docs are served at root
 
 suite.addBatch({
@@ -35,30 +35,40 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
+	    if(browser && browser.close){
+		browser.close();
+	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
         "and we visit the root URL": {
             topic: function() {
-                var browser;
+		var self=this;
+                //var browser;
                 browser = new Browser();
+		//browser.debug();
 
                 browser.visit("http://localhost:4815/", this.callback);
             },
             "it works": function(err, br) {
                 assert.ifError(err);
-                assert.isTrue(br.success);
+                //assert.isTrue(br.success);
+		browser.assert.success();
             },
             "it has the right title": function(err, br) {
                 assert.ifError(err);
-                assert.isTrue(br.success);
-                assert.equal(br.text("title"), "API - pump.io");
+                //assert.isTrue(br.success);
+		browser.assert.success();
+                //assert.equal(br.text("title"), "API - pump.io");
+                browser.assert.text("title", "API - pump.io");
             },
             "it has the right H1": function(err, br) {
                 assert.ifError(err);
-                assert.isTrue(br.success);
-                assert.equal(br.text("H1"), "pump.io API");
+                //assert.isTrue(br.success);
+		browser.assert.success();
+                //assert.equal(br.text("H1"), "pump.io API");
+                browser.assert.text("H1", "pump.io API");
             }
         }
     }

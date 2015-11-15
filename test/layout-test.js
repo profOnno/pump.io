@@ -21,7 +21,8 @@ var assert = require("assert"),
     oauthutil = require("./lib/oauth"),
     Browser = require("zombie"),
     setupApp = oauthutil.setupApp,
-    setupAppConfig = oauthutil.setupAppConfig;
+    setupAppConfig = oauthutil.setupAppConfig,
+    browser;
 
 var suite = vows.describe("layout test");
 
@@ -36,45 +37,56 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
+	    if (browser && browser.close) {
+		browser.close();
+	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
         "and we visit the root URL": {
             topic: function() {
-                var browser;
+                //var browser;
                 browser = new Browser();
 
                 browser.visit("http://localhost:4815/", this.callback);
             },
             "it works": function(err, br) {
                 assert.ifError(err);
-                assert.isTrue(br.success);
+                //assert.isTrue(br.success);
+                browser.assert.success();
             },
             "and we look at the results": {
                 topic: function(br) {
                     return br;
                 },
                 "it has the right title": function(br) {
-                    assert.equal(br.text("title"), "Welcome - Test");
+                    //assert.equal(br.text("title"), "Welcome - Test");
+                    browser.assert.text("title", "Welcome - Test");
                 },
                 "it has a top navbar": function(br) {
-                    assert.ok(br.query("div.navbar"));
+                    //assert.ok(br.query("div.navbar"));
+                    browser.assert.element("div.navbar");
                 },
                 "it has a brand link": function(br) {
-                    assert.equal(br.text("a.brand"), "Test");
+                    //assert.equal(br.text("a.brand"), "Test");
+                    browser.assert.text("a.brand", "Test");
                 },
                 "it has a registration link": function(br) {
-                    assert.equal(br.text("div.navbar a#register"), "Register");
+                    //assert.equal(br.text("div.navbar a#register"), "Register");
+                    browser.assert.text("div.navbar a#register", "Register");
                 },
                 "it has a login link": function(br) {
-                    assert.equal(br.text("div.navbar a#login"), "Login");
+                    //assert.equal(br.text("div.navbar a#login"), "Login");
+                    browser.assert.text("div.navbar a#login", "Login");
                 },
                 "it has a footer": function(br) {
-                    assert.ok(br.query("footer"));
+                    //assert.ok(br.query("footer"));
+                    browser.assert.element("footer");
                 },
                 "it has a link to pump.io in the footer": function(br) {
-                    assert.equal(br.text("footer a[href='http://pump.io/']"), "pump.io");
+                    //assert.equal(br.text("footer a[href='http://pump.io/']"), "pump.io");
+                    browser.assert.text("footer a[href='http://pump.io/']", "pump.io");
                 }
             }
         }

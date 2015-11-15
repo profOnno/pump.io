@@ -1,4 +1,4 @@
-// oauth.js
+//acce/ oauth.js
 //
 // Utilities for generating clients, request tokens, and access tokens
 //
@@ -124,10 +124,25 @@ var newClient = function(hostname, port, path, cb) {
     });
 };
 
-var authorize = function(cl, rt, user, hostname, port, cb) {
+var browserClose=function(br){
+	Step(
+		function(){
+			br.on("closed",this);
+			br.close();
+		},
+		function(){
+			//console.log("done closing");
+		}
+	);
 
-    var browser = new Browser(),
+};
+
+var authorize = function(cl, rt, user, hostname, port, cb) {
+//waitDuration is needed cause zombie sometimes need more time (it sometimes is a zombie).
+    var browser = new Browser({waitDuration:"30s"}),
         url;
+
+	//browser.debug();
 
     if (!port) {
         cb = hostname;
@@ -140,26 +155,35 @@ var authorize = function(cl, rt, user, hostname, port, cb) {
                   pathname: "/oauth/authorize",
                   query: {oauth_token: rt.token}});
 
-    browser.on("error", function(err) {
-        cb(err, null);
-    });
-
     browser.visit(url)
         .then(function() {
             browser
                 .fill("#username", user.nickname)
                 .fill("#password", user.password)
                 .pressButton("#authenticate", function() {
+//		    console.log("back from button press1?");	
+
                     // is there an authorize button?
                     if (browser.button("#authorize")) {
                         // if so, press it
                         browser.pressButton("#authorize", function() {
-                            cb(null, browser.text("#verifier"));
+			    var res;
+			    res = browser.text("#verifier");
+			    browserClose(browser);
+//			    console.log("res:"+res);
+                            cb(null,res); 
                         }).fail(function(err) {
+				//console.log("pressbutton fail");
+			    browserClose(browser);
                             cb(err, null);
                         });
                     } else {
-                        cb(null, browser.text("#verifier"));
+			var res;
+//			console.log("there is no button? and thats correct...");
+			res = browser.text("#verifier");
+			browserClose(browser);
+                        cb(null, res);
+                        //cb(null, browser.text("#verifier"));
                     }
                 });
         });
@@ -213,6 +237,7 @@ var accessToken = function(cl, user, hostname, port, cb) {
         function(err, res) {
             if (err) throw err;
             rt = res;
+		//console.log("accessToken authorize");
             authorize(cl, rt, user, hostname, port, this);
         },
         function(err, verifier) {
@@ -382,7 +407,9 @@ var setupAppConfig = function(config, callback) {
 
     var dummy = {
         close: function() {
-            child.kill();
+	    //console.log("killing child");
+	   child.kill("SIGKILL");
+		child.disconnect();
         },
         killCred: function(webfinger, callback) {
             var timeout = setTimeout(function() {
@@ -403,6 +430,10 @@ var setupAppConfig = function(config, callback) {
     child.on("error", function(err) {
         callback(err, null);
     });
+
+	child.on("close",function(){
+		console.log("menno test/lib/oath setupApp onClose");
+	});
 
     child.on("message", function(msg) {
         switch (msg.cmd) {

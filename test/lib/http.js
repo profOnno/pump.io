@@ -211,10 +211,12 @@ var jsonHandler = function(callback) {
     return function(err, data, response) {
         var obj;
         if (err) {
+		//console.log("ment to be? error:"+err);
             callback(new OAuthJSONError(err), null, null);
         } else {
             try {
                 obj = JSON.parse(data);
+		//console.log("noerror");
                 callback(null, obj, response);
             } catch (e) {
                 callback(e, null, null);
@@ -230,7 +232,7 @@ var postJSON = function(serverUrl, cred, payload, callback) {
     oa = newOAuth(serverUrl, cred);
     
     toSend = JSON.stringify(payload);
-
+//	console.log("===========postJSON");
     oa.post(serverUrl, cred.token, cred.token_secret, toSend, "application/json", jsonHandler(callback));
 };
 

@@ -22,9 +22,10 @@ var assert = require("assert"),
     Browser = require("zombie"),
     Step = require("step"),
     setupApp = oauthutil.setupApp,
-    setupAppConfig = oauthutil.setupAppConfig;
+    setupAppConfig = oauthutil.setupAppConfig,
+    browser;
 
-var suite = vows.describe("layout test");
+var suite = vows.describe("register web ui test");
 
 // A batch to test some of the layout basics
 
@@ -37,23 +38,26 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
+	    if (browser && browser.close){
+		browser.close();
+	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
         "and we visit the root URL": {
             topic: function() {
-                var browser,
-                    callback = this.callback;
-                browser = new Browser();
+                var callback = this.callback;
 
+                browser = new Browser();
                 browser.visit("http://localhost:4815/main/register", function(err, br) {
                     callback(err, br);
                 });
             },
             "it works": function(err, br) {
                 assert.ifError(err);
-                assert.isTrue(br.success);
+                //assert.isTrue(br.success);
+		browser.assert.success();
             },
             "and we check the content": {
                 topic: function(br) {
@@ -61,22 +65,28 @@ suite.addBatch({
                     callback(null, br);
                 },
                 "it includes a registration div": function(err, br) {
-                    assert.ok(br.query("div#registerpage"));
+                    //assert.ok(br.query("div#registerpage"));
+                    browser.assert.element("div#registerpage");
                 },
                 "it includes a registration form": function(err, br) {
-                    assert.ok(br.query("div#registerpage form"));
+                    //assert.ok(br.query("div#registerpage form"));
+                    browser.assert.element("div#registerpage form");
                 },
                 "the registration form has a nickname field": function(err, br) {
-                    assert.ok(br.query("div#registerpage form input[name=\"nickname\"]"));
+                    //assert.ok(br.query("div#registerpage form input[name=\"nickname\"]"));
+                    browser.assert.element("div#registerpage form input[name=\"nickname\"]");
                 },
                 "the registration form has a password field": function(err, br) {
-                    assert.ok(br.query("div#registerpage form input[name=\"password\"]"));
+                    //assert.ok(br.query("div#registerpage form input[name=\"password\"]"));
+                    browser.assert.element("div#registerpage form input[name=\"password\"]");
                 },
                 "the registration form has a password repeat field": function(err, br) {
-                    assert.ok(br.query("div#registerpage form input[name=\"repeat\"]"));
+                    //assert.ok(br.query("div#registerpage form input[name=\"repeat\"]"));
+                    browser.assert.element("div#registerpage form input[name=\"repeat\"]");
                 },
                 "the registration form has a submit button": function(err, br) {
-                    assert.ok(br.query("div#registerpage form button[type=\"submit\"]"));
+                    //assert.ok(br.query("div#registerpage form button[type=\"submit\"]"));
+                    browser.assert.element("div#registerpage form button[type=\"submit\"]");
                 },
             "and we submit the form": {
                 topic: function() {
@@ -85,24 +95,17 @@ suite.addBatch({
 
                         Step(
                             function() {
-                                br.fill("nickname", "sparks", this);
-                            },
-                            function(err) {
-                                if (err) throw err;
-                                br.fill("password", "redplainsrider1", this);
-                            },
-                            function(err) {
-                                if (err) throw err;
-                                br.fill("repeat", "redplainsrider1", this);
-                            },
-                            function(err) {
-                                if (err) throw err;
-                                br.pressButton("button[type=\"submit\"]", this);
+                                browser
+				    .fill("nickname", "sparks", this)
+                                    .fill("password", "redplainsrider1", this)
+                                    .fill("repeat", "redplainsrider1", this);
+                                browser.pressButton("button[type=\"submit\"]", this);
                             },
                             function(err) {
                                 if (err) {
                                     callback(err, null);
                                 } else {
+					console.log("got back from button press");
                                     callback(null, br);
                                 }
                             }
@@ -110,7 +113,8 @@ suite.addBatch({
                     },
                     "it works": function(err, br) {
                         assert.ifError(err);
-                        assert.isTrue(br.success);
+                        //assert.isTrue(br.success);
+                        browser.assert.success();
                     }
                 }
             }
