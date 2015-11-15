@@ -382,7 +382,7 @@ var setupAppConfig = function(config, callback) {
 
     var dummy = {
         close: function() {
-            child.kill();
+            child.kill("SIGKILL");
         },
         killCred: function(webfinger, callback) {
             var timeout = setTimeout(function() {
