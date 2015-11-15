@@ -5,9 +5,12 @@ Version 0.3.0
 This is pump.io. It's a stream server that does most of what people
 really want from a social network.
 
-`master:`[![Build Status](https://secure.travis-ci.org/profOnno/pump.io.png)](http://travis-ci.org/profOnno/pump.io)
-`vows-fix:`[![Build Status](https://secure.travis-ci.org/profOnno/pump.io.png?branch=vows-fix)](http://travis-ci.org/profOnno/pump.io)
-`vows-volkswagen:`[![Build Status](https://secure.travis-ci.org/profOnno/pump.io.png?branch=vows-volkswagen)](http://travis-ci.org/profOnno/pump.io)
+`master:`[![Build Status](https://api.travis-ci.org/profOnno/pump.io.png)](http://travis-ci.org/profOnno/pump.io)  
+
+`vows-fix:`[![Build Status](https://api.travis-ci.org/profOnno/pump.io.png?branch=vows-fix)](http://travis-ci.org/profOnno/pump.io)  
+
+`vows-volkswagen:`[![Build Status](https://api.travis-ci.org/profOnno/pump.io.png?branch=vows-volkswagen)](http://travis-ci.org/profOnno/pump.io)  
+
 
 ## License
 
