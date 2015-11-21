@@ -2,10 +2,9 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-script: "./node_modules/.bin/vows --spec test/*-test.js"
+script: "npm test"
 before_script:
   - "./test/hosts.sh"
-  - "wget https://raw.githubusercontent.com/profOnno/pump.io/vows-volkswagen-am/package.json -O package.json"
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq graphicsmagick
