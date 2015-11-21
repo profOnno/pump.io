@@ -50,7 +50,7 @@
         "pump-stop-following": "./bin/pump-stop-following"
     },
     "scripts": {
-        "test": "vows --spec test/*-test.js",
+        "test": "vows --spec test/[a-m]*-test.js",
         "start": "./bin/pump"
     },
     "repository": {
