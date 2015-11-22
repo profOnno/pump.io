@@ -2,8 +2,9 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-script: "./node_modules/.bin/vows --spec test/*-test.js"
+script: "npm test"
 before_script:
+  - "patch -N -p1 < patch/connect-databank.patch"
   - "./test/hosts.sh"
 before_install:
  - sudo apt-get update -qq
