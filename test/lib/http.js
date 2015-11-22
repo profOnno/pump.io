@@ -232,7 +232,7 @@ var postJSON = function(serverUrl, cred, payload, callback) {
     oa = newOAuth(serverUrl, cred);
     
     toSend = JSON.stringify(payload);
-	console.log("===========postJSON");
+	//console.log("===========postJSON");
     oa.post(serverUrl, cred.token, cred.token_secret, toSend, "application/json", jsonHandler(callback));
 };
 
