@@ -908,7 +908,6 @@ suite.addBatch({
                             function(){
                                     setTimeout(this,100);
                             },function(){
-                                    console.log("gonna getJSON");
                                 httputil.getJSON(url, cred, function(err, likes, response) {
                                     cb(err, likes);
                                 });
@@ -1019,7 +1018,6 @@ suite.addBatch({
                                 setTimeout(this,100);
                             },
                             function(){
-                                console.log(" anonymouse reads the likes");
                                 httputil.getJSON(url, cred, function(err, likes, response) {
                                     cb(err, likes);
                                 });
