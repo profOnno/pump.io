@@ -91,7 +91,6 @@ suite.addBatch({
                     },
                     "and we get a new access token": {
                         topic: function(user, client, app, oauth) {
-				console.log("this one is the bitch");
                             oauth.accessToken(client, {nickname: "alice", password: "ch3z|p4niSSe"}, this.callback);
                         },
                         "it works": function(err, pair) {
