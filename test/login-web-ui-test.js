@@ -23,8 +23,7 @@ var assert = require("assert"),
     Step = require("step"),
     setupApp = oauthutil.setupApp,
     setupAppConfig = oauthutil.setupAppConfig,
-    newCredentials = oauthutil.newCredentials,
-    browser;
+    newCredentials = oauthutil.newCredentials;
 
 var suite = vows.describe("login web UI test");
 
@@ -39,9 +38,6 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
-	    if (browser && browser.close){
-		browser.close();
-	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
@@ -56,23 +52,28 @@ suite.addBatch({
             },
             "and we visit the login URL": {
                 topic: function() {
-                    //var browser;
+                    var cb = this.callback;
                     browser = new Browser({runScripts: true});
-                    browser.visit("http://localhost:4815/main/login", this.callback);
+                    browser.visit("http://localhost:4815/main/login", function(){
+                        cb(null, browser);
+                    });
                 },
-                "it works": function(err) {
+                teardown: function(br){
+                    br.window.close();
+                },
+                "it works": function(err, br) {
                     assert.ifError(err);
                     //assert.isTrue(br.success);
-		    browser.assert.success("ok");
+                    browser.assert.success("ok");
                 },
                 "and we check the content": {
-                    topic: function(br) {
-			//br not used needs FIX
+                    topic: function(err, br) {
+                        //br not used needs FIX
                         return br;
                     },
                     "it includes a login div": function(br) {
                         //assert.ok(br.query("div#loginpage"));
-			//browser.dump();
+                        //browser.dump();
                         //br.assert.ok(br.query("div#loginpage"));
                         browser.assert.element("div#loginpage");
                     },

@@ -128,7 +128,7 @@ var browserClose=function(br){
 	Step(
 		function(){
 			br.on("closed",this);
-			br.close();
+			br.window.close();
 		},
 		function(){
 			//console.log("done closing");

@@ -22,8 +22,7 @@ var assert = require("assert"),
     Browser = require("zombie"),
     Step = require("step"),
     setupApp = oauthutil.setupApp,
-    setupAppConfig = oauthutil.setupAppConfig,
-    browser;
+    setupAppConfig = oauthutil.setupAppConfig;
 
 var suite = vows.describe("register web ui test");
 
@@ -38,74 +37,76 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
-	    if (browser && browser.close){
-		browser.close();
-	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
         "and we visit the root URL": {
             topic: function() {
-                var callback = this.callback;
+                var cb = this.callback;
 
-                browser = new Browser();
-                browser.visit("http://localhost:4815/main/register", function(err, br) {
-                    callback(err, br);
+                var browser = new Browser();
+                browser.visit("http://localhost:4815/main/register", function(err) {
+                    cb(err, browser);
                 });
+            },
+            teardown: function(br){
+                br.window.close();
             },
             "it works": function(err, br) {
                 assert.ifError(err);
                 //assert.isTrue(br.success);
-		browser.assert.success();
+                br.assert.success();
             },
             "and we check the content": {
                 topic: function(br) {
-                    var callback = this.callback;
-                    callback(null, br);
+                    var cb = this.callback;
+                    cb(null, br);
                 },
                 "it includes a registration div": function(err, br) {
                     //assert.ok(br.query("div#registerpage"));
-                    browser.assert.element("div#registerpage");
+                    br.assert.element("div#registerpage");
                 },
                 "it includes a registration form": function(err, br) {
                     //assert.ok(br.query("div#registerpage form"));
-                    browser.assert.element("div#registerpage form");
+                    br.assert.element("div#registerpage form");
                 },
                 "the registration form has a nickname field": function(err, br) {
                     //assert.ok(br.query("div#registerpage form input[name=\"nickname\"]"));
-                    browser.assert.element("div#registerpage form input[name=\"nickname\"]");
+                    br.assert.element("div#registerpage form input[name=\"nickname\"]");
                 },
                 "the registration form has a password field": function(err, br) {
                     //assert.ok(br.query("div#registerpage form input[name=\"password\"]"));
-                    browser.assert.element("div#registerpage form input[name=\"password\"]");
+                    br.assert.element("div#registerpage form input[name=\"password\"]");
                 },
                 "the registration form has a password repeat field": function(err, br) {
                     //assert.ok(br.query("div#registerpage form input[name=\"repeat\"]"));
-                    browser.assert.element("div#registerpage form input[name=\"repeat\"]");
+                    br.assert.element("div#registerpage form input[name=\"repeat\"]");
                 },
                 "the registration form has a submit button": function(err, br) {
                     //assert.ok(br.query("div#registerpage form button[type=\"submit\"]"));
-                    browser.assert.element("div#registerpage form button[type=\"submit\"]");
+                    br.assert.element("div#registerpage form button[type=\"submit\"]");
                 },
             "and we submit the form": {
-                topic: function() {
-                    var callback = this.callback,
-                        br = arguments[0];
+                topic: function(br) {
+                    var callback = this.callback;
+                        //br = arguments[0];
 
                         Step(
                             function() {
-                                browser
-				    .fill("nickname", "sparks", this)
+                                var self = this;
+                                br
+                                    .fill("nickname", "sparks", this)
                                     .fill("password", "redplainsrider1", this)
                                     .fill("repeat", "redplainsrider1", this);
-                                browser.pressButton("button[type=\"submit\"]", this);
+                                br.pressButton("button[type=\"submit\"]", function(){
+                                    self(null,br);
+                                });
                             },
-                            function(err) {
+                            function(err, br) {
                                 if (err) {
                                     callback(err, null);
                                 } else {
-					console.log("got back from button press");
                                     callback(null, br);
                                 }
                             }
@@ -114,7 +115,7 @@ suite.addBatch({
                     "it works": function(err, br) {
                         assert.ifError(err);
                         //assert.isTrue(br.success);
-                        browser.assert.success();
+                        br.assert.success();
                     }
                 }
             }

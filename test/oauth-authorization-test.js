@@ -42,7 +42,7 @@ var browserClose=function(br){
 	Step(
 		function(){
 			br.on("closed",this);
-			br.close();
+			br.window.close();
 		},
 		function(){
 			//console.log("done closing");
@@ -76,6 +76,7 @@ suite.addBatch({
                         port: 4815,
                         path: "/oauth/authorize"
                     };
+
                 http.get(options, function(res) {
                     if (res.statusCode >= 400 && res.statusCode < 500) {
                         cb(null);
@@ -351,33 +352,32 @@ suite.addBatch({
                     function(err, rt) {
                         if (err) throw err;
                         br = new Browser({runScripts: false}); //faster without scripts...
-                        //br = new Browser();
-			//br.debug();
-			var self = this;
-			Step(
-			    function(){
+                        var self = this;
+                        Step(
+                            function(){
                         	br.visit("http://localhost:4815/oauth/authorize?oauth_token=" + rt.token, this);
-			    },
-			    function(){
-				self(null,br);
-			   }
-			);
+                            },
+                            function(){
+                                self(null,br);
+                            }
+                        );
                     },
                     function(err, br) {
-			var self = this;
+                        var self = this;
                         if (err) throw err;
                         if (!br.success) throw new Error("Browser error");
+
                         br
-				.fill("username", "dormouse", this)
+                            .fill("username", "dormouse", this)
                         	.fill("password", "BADPASSWORD", this);
-			Step(
-			    function(){
-                        	br.pressButton("#authenticate", this);
-			   },
-			   function(){
-				self(br.statusCode,br)
-			  }
-			);
+                        Step(
+                            function(){
+                                br.pressButton("#authenticate", this);
+                            },
+                            function(){
+                                self(br.statusCode,br)
+			                }
+                        );
                     },
                     function(err,br) {
                         if (err && br.statusCode >= 400 && br.statusCode < 500) {
@@ -390,9 +390,15 @@ suite.addBatch({
                     }
                 );
             },
-	    teardown: function(br){
-		browserClose(br);
-	    },
+            teardown: function(br){
+                /*
+                if(br && br.window.close){
+                    console.log("got browser");
+                    br.window.close(function(){});
+                }
+                */
+                browserClose(br);
+            },
             "it fails correctly": function(err) {
                 assert.ifError(err);
             }

@@ -23,9 +23,8 @@ var assert = require("assert"),
     setupAppConfig = oauthutil.setupAppConfig;
 
 var suite = vows.describe("homepage with noweb test");
-var browser;//menno
-// A batch to test that the API docs are served at root
 
+// A batch to test that the API docs are served at root
 suite.addBatch({
     "When we set up the app": {
         topic: function() {
@@ -35,40 +34,42 @@ suite.addBatch({
             if (app && app.close) {
                 app.close();
             }
-	    if(browser && browser.close){
-		browser.close();
-	    }
         },
         "it works": function(err, app) {
             assert.ifError(err);
         },
         "and we visit the root URL": {
             topic: function() {
-		var self=this;
-                //var browser;
-                browser = new Browser();
-		//browser.debug();
+		var cb=this.callback;
+                var browser = new Browser();
 
-                browser.visit("http://localhost:4815/", this.callback);
+                browser.visit("http://localhost:4815/", function(){
+                        cb(null, browser);
+                });
             },
+                teardown: function(br){
+                        if(br && br.window.close){
+                                br.window.close();
+                        }
+                },
             "it works": function(err, br) {
                 assert.ifError(err);
                 //assert.isTrue(br.success);
-		browser.assert.success();
+		        br.assert.success();
             },
             "it has the right title": function(err, br) {
                 assert.ifError(err);
                 //assert.isTrue(br.success);
-		browser.assert.success();
+		        br.assert.success();
                 //assert.equal(br.text("title"), "API - pump.io");
-                browser.assert.text("title", "API - pump.io");
+                br.assert.text("title", "API - pump.io");
             },
             "it has the right H1": function(err, br) {
                 assert.ifError(err);
                 //assert.isTrue(br.success);
-		browser.assert.success();
+		        br.assert.success();
                 //assert.equal(br.text("H1"), "pump.io API");
-                browser.assert.text("H1", "pump.io API");
+                br.assert.text("H1", "pump.io API");
             }
         }
     }
