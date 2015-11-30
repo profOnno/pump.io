@@ -40,8 +40,6 @@ suite.addBatch({
         },
         teardown: function(app) {
             if (app && app.close) {
-		console.log("gonna call app.close()");
-	//	app.on("close",function(){console.log("closed....i think");});
                 app.close();
 		
             }
