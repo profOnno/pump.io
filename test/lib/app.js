@@ -41,10 +41,10 @@ exec("ps aux |grep [n]ode | grep test/lib/app.js",function(error,stdout,stderr){
 if (cluster.isMaster) {
     worker = cluster.fork();
 	worker.on("close",function(){
-		console.log("menno cluster onclose");
+		//console.log("menno cluster onclose");
 	});
 	worker.on("error",function(){
-		console.log("menno cluster  onerror");
+		//console.log("menno cluster  onerror");
 	});
     worker.on("message", function(msg) {
         switch (msg.cmd) {
@@ -76,10 +76,10 @@ if (cluster.isMaster) {
             if (err) throw err;
             app = res;
 		app.on("close",function(){
-			console.log("menno app.on close");
+			//console.log("menno app.on close");
 		});
 		app.on("error",function(){
-			console.log("menno app.on error");
+			//console.log("menno app.on error");
 		});
             app.run(this);
         },
