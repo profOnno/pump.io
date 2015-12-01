@@ -432,7 +432,7 @@ var setupAppConfig = function(config, callback) {
     });
 
 	child.on("close",function(){
-		console.log("menno test/lib/oath setupApp onClose");
+		//console.log("menno test/lib/oath setupApp onClose");
 	});
 
     child.on("message", function(msg) {
