@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - "0.8"
   - "0.10"
-script: "./node_modules/.bin/vows --spec test/*-test.js"
+  - "0.12"
+  - "4"
+script: "npm test"
 before_script:
   - "./test/hosts.sh"
 before_install:
