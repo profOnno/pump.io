@@ -10,6 +10,5 @@ before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq graphicsmagick
  - npm install shelljs
- - pwd
- - /home/travis/build/profOnno/pump.io/puu.js setupPackageJSON
+ - ./puu.js setupPackageJSON
 
