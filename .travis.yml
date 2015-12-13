@@ -6,7 +6,7 @@ node_js:
 script: "npm test"
 before_script:
   - "./test/hosts.sh"
-  - "npm install shell.js"
+  - "npm install shelljs"
   - "./puu.js setupPackageJSON"
 before_install:
  - sudo apt-get update -qq
