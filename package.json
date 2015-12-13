@@ -61,6 +61,6 @@
     "keywords": ["activitystreams", "socialnetwork", "social", "pump", "streams", "api", "app", "server"],
     "license": "Apache-2.0",
     "engine": {
-        "node": ">=0.8"
+        "node": ">=0.10 <4.x"
     }
 }
