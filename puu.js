@@ -3,9 +3,7 @@
 require("shelljs/make");
 require("shelljs/global");
 
-var shell = require("shelljs"),
-//    colors = require("colors"),
-    _ = require("underscore");
+var shell = require("shelljs");
 
 var symbol={
     info: 'ℹ',
