@@ -7,7 +7,7 @@
     "devDependencies": {
         "vows": "0.8.x",
         "node-mocks-http": "0.0.x",
-        "zombie": "4.x.x",
+        "zombie": "3.x.x",
         "xml2js": "0.1.x",
         "simplesmtp": "https://github.com/profOnno/simplesmtp/archive/vows.tar.gz",
         "rimraf": "2.0.x"
