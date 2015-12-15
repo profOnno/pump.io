@@ -179,7 +179,7 @@ suite.addBatch({
         "and we register to associate with non-email contacts set":
         assocFail({application_name: "Bad Contact",
                    type: "client_associate",
-                   contacts: "http://example.com/contact-form"}),
+                   contacts: "mennohttp://example.com/contact-form"}),
         "and we register to associate with bad separator in contacts":
         assocFail({application_name: "Comma Contact",
                    type: "client_associate",

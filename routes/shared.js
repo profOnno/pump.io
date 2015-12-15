@@ -42,7 +42,8 @@ var sharedFile = function(fname) {
     var root = path.join(__dirname, "..", "node_modules");
 
     return function(req, res, next) {
-        send(req, res, next, {path: fname, root: root});
+        //send(req, res, next, {path: fname, root: root});
+        res.sendFile(fname, {root: root});
     };
 };
 

@@ -20,7 +20,7 @@ var databank = require("databank"),
     Step = require("step"),
     _ = require("underscore"),
     validator = require("validator"),
-    check = validator.check,
+    //check = validator.check,
     Mailer = require("../lib/mailer"),
     URLMaker = require("../lib/urlmaker").URLMaker,
     filters = require("../lib/filters"),
@@ -130,11 +130,14 @@ var loginRedirect = function(rel) {
 };
 
 var showMain = function(req, res, next) {
+    console.log("showMain");
     if (req.principalUser) {
         req.log.debug({msg: "Showing inbox for logged-in user", user: req.principalUser});
         showInbox(req, res, next);
     } else {
+        console.log("showing welcome page");
         req.log.debug({msg: "Showing welcome page"});
+        console.log("gonna res.render main");
         res.render("main", {page: {title: "Welcome", url: req.originalUrl}});
     }
 };
@@ -214,9 +217,7 @@ var handleRemote = function(req, res, next) {
         parts,
         host;
 
-    try {
-        check(webfinger).isEmail();
-    } catch(e) {
+    if(!validator.isEmail(webfinger)){
         next(new HTTPError(e.message, 400));
         return;
     }
@@ -869,6 +870,7 @@ var addMessages = function(req, res, next) {
 
     // We only do this for registered users
 
+    console.log("addMessages: req.principalUser: " + req.principalUser);
     if (!user) {
         next(null);
         return;
