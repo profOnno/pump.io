@@ -1598,7 +1598,15 @@ var streamArgs = function(req, defaultCount, maxCount) {
 };
 
 var whoami = function(req, res, next) {
-    res.redirect("/api/user/"+req.principalUser.nickname+"/profile", 302);
+    if (_.has(req, "headers") && _.has(req.headers, "redirect276")) {
+        res.header("Content-Type", "application/json");
+        var jsonRedirect = {
+            "redirect": "/api/user/" + req.principalUser.nickname + "/profile"
+        };
+        res.send(jsonRedirect, 276);
+    } else {
+        res.redirect("/api/user/"+req.principalUser.nickname+"/profile", 302);
+    }
 };
 
 var reqProxy = function(req, res, next) {
